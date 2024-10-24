@@ -1,0 +1,3 @@
+C:/Users/Avelar/Documents/universidad/clases/sexto/Seminario Sistemas Operativos/2/2.4/productorconsumidor/cmake-build-debug/CMakeFiles/productorconsumidor.dir
+C:/Users/Avelar/Documents/universidad/clases/sexto/Seminario Sistemas Operativos/2/2.4/productorconsumidor/cmake-build-debug/CMakeFiles/edit_cache.dir
+C:/Users/Avelar/Documents/universidad/clases/sexto/Seminario Sistemas Operativos/2/2.4/productorconsumidor/cmake-build-debug/CMakeFiles/rebuild_cache.dir

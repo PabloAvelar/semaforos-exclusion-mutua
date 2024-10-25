@@ -2,69 +2,97 @@
 #include <windows.h>
 #include <stdlib.h>
 
-//#include "../include/queue.h"
+#define MAX_SEM_COUNT 10
+#define THREADCOUNT 5
 
-DWORD WINAPI tarea(LPVOID param) {
-    int thread_id = *(int*)param; // Convierte el parámetro recibido
-    printf("Soy un hilo ejecutando la tarea: %d\n", thread_id);
+HANDLE s;
+DWORD WINAPI tarea(LPVOID param);
+int shared_resource = 0;
+int main(void) {
+    HANDLE threads[THREADCOUNT];
+    int threads_ids[MAX_SEM_COUNT];
+    DWORD ThreadID;
 
-    return 0;
-}
+    // Se crea un semáforo con un conteo máximo de MAX_SEM_COUNT
+    s = CreateSemaphore(
+        NULL,
+        MAX_SEM_COUNT,
+        MAX_SEM_COUNT,
+        NULL
+        );
 
-/*void testqueue() {
-    struct Queue queue;
-    initQueue(&queue);
+    if (!s) {
+        printf("CreateSemaphore error: %d\n", GetLastError());
+        return EXIT_FAILURE;
+    }
 
-    enqueue(&queue, 10);
-    enqueue(&queue, 20);
-    enqueue(&queue, 30);
-    enqueue(&queue, 40);
-
-    printf("Mostrando cola:\n");
-    showQueue(&queue);
-
-    printf("Desencolando:\n");
-    dequeue(&queue);
-    showQueue(&queue);
-
-    printf("Limpiando la cola:\n");
-    freeQueue(&queue);
-    showQueue(&queue);
-
-}*/
-
-int main() {
-    const int NUM_THREADS = 5;
-    HANDLE threads[NUM_THREADS];
-    int threads_ids[NUM_THREADS];
-
-    for (int i = 0; i < NUM_THREADS; i++) {
+    // Creando hilos
+    for (int i = 0; i < THREADCOUNT; i++) {
         threads_ids[i] = i;
-
-        // Creando el nuevo hilo
         threads[i] = CreateThread(
-            NULL, // atributos de seguridad, usando el predeterminado
-            0,     // Tamaño de la pila
-            tarea, //Función a ejecutar el hilo
-            &threads_ids[i], // Parámetro para la función del hilo
-            0, // Bandera de creación, 0 para ejecución inmediata.
-            NULL // ID del hilo, NULL porque no se necesita.
-
+            NULL,
+            0,
+            tarea,
+            &threads_ids[i],
+            0,
+            &ThreadID
             );
 
-        if (threads[i] == NULL) {
-            printf("Error al crear el hilo %d\n", i);
+        if (!threads[i]) {
+            printf("CreateThread error: %d\n", GetLastError());
+            return EXIT_FAILURE;
         }
     }
 
-    WaitForMultipleObjects(NUM_THREADS, threads, TRUE, INFINITE);
-
-    // Cerrando los handles de los hilos
-    for(int i = 0; i < NUM_THREADS; i++) {
+    WaitForMultipleObjects(THREADCOUNT, threads, TRUE, INFINITE);
+    for(int i = 0; i < THREADCOUNT; i++) {
         CloseHandle(threads[i]);
     }
+
+    CloseHandle(s);
 
     printf("Todos los hilos han terminado.\a\n");
     system("pause");
     return 0;
+}
+
+DWORD WINAPI tarea(LPVOID param) {
+    int thread_id = *(int *) param; // Convierte el parámetro recibido
+    printf("Soy un hilo ejecutando la tarea: %d\n", thread_id);
+
+    DWORD dwWaitResult;
+    BOOL bContinue = TRUE;
+
+    while(bContinue) {
+        // Intentando entrar
+        dwWaitResult = WaitForSingleObject(
+            s,
+            5000
+            );
+        switch (dwWaitResult) {
+            // Si se lanzó un Signal
+            case WAIT_OBJECT_0:
+                printf("Thread %d: wait succeded\n", GetCurrentThreadId());
+                bContinue=FALSE;
+                // Simulando tiempo de tarea
+                Sleep(3000);
+
+            // Soltado el semáforo cuando termina la tarea
+            if (!ReleaseSemaphore(
+                s,
+                1, // Incremento del contador
+                NULL
+                )) {
+                printf("ReleaseSemaphore error: %d\n", GetLastError());
+            }
+            break;
+
+            // Si el semáforo no recibió un Signal, entonces ocurre un tiempo de espera
+            case WAIT_TIMEOUT:
+                printf("Thread %d: wait timed out\n", GetCurrentThreadId());
+            break;
+        }
+    }
+
+    return TRUE;
 }

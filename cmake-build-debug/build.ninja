@@ -55,8 +55,20 @@ build CMakeFiles/productorconsumidor.dir/src/main.c.obj: C_COMPILER__productorco
   OBJECT_DIR = CMakeFiles\productorconsumidor.dir
   OBJECT_FILE_DIR = CMakeFiles\productorconsumidor.dir\src
 
-build CMakeFiles/productorconsumidor.dir/src/semaphore.c.obj: C_COMPILER__productorconsumidor_unscanned_Debug C$:/Users/Avelar/Documents/universidad/clases/sexto/Seminario$ Sistemas$ Operativos/2/2.4/productorconsumidor/src/semaphore.c || cmake_object_order_depends_target_productorconsumidor
-  DEP_FILE = CMakeFiles\productorconsumidor.dir\src\semaphore.c.obj.d
+build CMakeFiles/productorconsumidor.dir/src/buffer.c.obj: C_COMPILER__productorconsumidor_unscanned_Debug C$:/Users/Avelar/Documents/universidad/clases/sexto/Seminario$ Sistemas$ Operativos/2/2.4/productorconsumidor/src/buffer.c || cmake_object_order_depends_target_productorconsumidor
+  DEP_FILE = CMakeFiles\productorconsumidor.dir\src\buffer.c.obj.d
+  FLAGS = -g -std=gnu11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\productorconsumidor.dir
+  OBJECT_FILE_DIR = CMakeFiles\productorconsumidor.dir\src
+
+build CMakeFiles/productorconsumidor.dir/src/producer.c.obj: C_COMPILER__productorconsumidor_unscanned_Debug C$:/Users/Avelar/Documents/universidad/clases/sexto/Seminario$ Sistemas$ Operativos/2/2.4/productorconsumidor/src/producer.c || cmake_object_order_depends_target_productorconsumidor
+  DEP_FILE = CMakeFiles\productorconsumidor.dir\src\producer.c.obj.d
+  FLAGS = -g -std=gnu11 -fdiagnostics-color=always
+  OBJECT_DIR = CMakeFiles\productorconsumidor.dir
+  OBJECT_FILE_DIR = CMakeFiles\productorconsumidor.dir\src
+
+build CMakeFiles/productorconsumidor.dir/src/consumer.c.obj: C_COMPILER__productorconsumidor_unscanned_Debug C$:/Users/Avelar/Documents/universidad/clases/sexto/Seminario$ Sistemas$ Operativos/2/2.4/productorconsumidor/src/consumer.c || cmake_object_order_depends_target_productorconsumidor
+  DEP_FILE = CMakeFiles\productorconsumidor.dir\src\consumer.c.obj.d
   FLAGS = -g -std=gnu11 -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\productorconsumidor.dir
   OBJECT_FILE_DIR = CMakeFiles\productorconsumidor.dir\src
@@ -69,7 +81,7 @@ build CMakeFiles/productorconsumidor.dir/src/semaphore.c.obj: C_COMPILER__produc
 #############################################
 # Link the executable productorconsumidor.exe
 
-build productorconsumidor.exe: C_EXECUTABLE_LINKER__productorconsumidor_Debug CMakeFiles/productorconsumidor.dir/src/main.c.obj CMakeFiles/productorconsumidor.dir/src/semaphore.c.obj
+build productorconsumidor.exe: C_EXECUTABLE_LINKER__productorconsumidor_Debug CMakeFiles/productorconsumidor.dir/src/main.c.obj CMakeFiles/productorconsumidor.dir/src/buffer.c.obj CMakeFiles/productorconsumidor.dir/src/producer.c.obj CMakeFiles/productorconsumidor.dir/src/consumer.c.obj
   FLAGS = -g
   LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
   OBJECT_DIR = CMakeFiles\productorconsumidor.dir

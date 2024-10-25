@@ -1,71 +1,43 @@
 #include <stdio.h>
 #include <windows.h>
 #include <stdlib.h>
+#include "../include/buffer.h"
+#include "../include/consumer.h"
+#include "../include/producer.h"
 
-#define MAX_SEM_COUNT 10
-#define THREADCOUNT 5
-#define BUFFER_SIZE 10
-
-HANDLE s;
-
-DWORD WINAPI tarea(LPVOID param);
-
-int shared_resource[BUFFER_SIZE];
-int resource_counter = 0;
+#define THREADCOUNT 2
 
 int main(void) {
-    HANDLE threads[THREADCOUNT];
-    int threads_ids[MAX_SEM_COUNT];
-    DWORD ThreadID;
-
-    // Se crea un semáforo con un conteo máximo de MAX_SEM_COUNT
-    s = CreateSemaphore(
-        NULL,
-        1,
-        1,
-        NULL
-    );
-
-    if (!s) {
-        printf("CreateSemaphore error: %d\n", GetLastError());
-        return EXIT_FAILURE;
-    }
+    // Inicializando semáforos
+    initialize_sync();
 
     // Creando hilos
-    for (int i = 0; i < THREADCOUNT; i++) {
-        threads_ids[i] = i;
-        threads[i] = CreateThread(
-            NULL,
-            0,
-            tarea,
-            &threads_ids[i],
-            0,
-            &ThreadID
-        );
+    HANDLE threads[THREADCOUNT];
+    threads[0] = CreateThread(NULL, 0, producer, NULL, 0, NULL);
+    threads[1] = CreateThread(NULL, 0, consumer, NULL, 0, NULL);
 
-        if (!threads[i]) {
-            printf("CreateThread error: %d\n", GetLastError());
-            return EXIT_FAILURE;
+    // WaitForMultipleObjects(THREADCOUNT, threads, TRUE, INFINITE);
+    while (1) {
+        int randomTurn = rand() % 2;
+
+        if (randomTurn == 0) {
+            // Permitir al productor
+            WaitForSingleObject(threads[0], 0); // Verifica si el productor está listo
+        } else {
+            // Permitir al consumidor
+            WaitForSingleObject(threads[1], 0); // Verifica si el consumidor está listo
         }
+
+        // Se hace wey un rato para decidir de nuevo
+        Sleep(500);
     }
 
-    WaitForMultipleObjects(THREADCOUNT, threads, TRUE, INFINITE);
-    for (int i = 0; i < THREADCOUNT; i++) {
-        CloseHandle(threads[i]);
-    }
+    cleanup_sync();
 
-    CloseHandle(s);
-
-    printf("Todos los hilos han terminado.\a\n");
-    printf("Resultado final: [");
-    for(int i = 0; i < BUFFER_SIZE; i++) {
-        printf("%d, ", shared_resource[i]);
-    }
-    printf("]\n");
-    system("pause");
     return 0;
 }
 
+/*
 DWORD WINAPI tarea(LPVOID param) {
     int thread_id = *(int *) param; // Convierte el parámetro recibido
     printf("\n[Thread %d] Iniciando la tarea\n", thread_id);
@@ -110,3 +82,4 @@ DWORD WINAPI tarea(LPVOID param) {
 
     return 0;
 }
+*/

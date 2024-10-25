@@ -5,4 +5,8 @@
 #ifndef CONSUMER_H
 #define CONSUMER_H
 
+#include <windows.h>
+
+DWORD WINAPI consumer(LPVOID param);
+
 #endif //CONSUMER_H

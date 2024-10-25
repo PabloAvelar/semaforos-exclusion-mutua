@@ -4,10 +4,10 @@ project(productorconsumidor C)
 set(CMAKE_C_STANDARD 11)
 
 add_executable(productorconsumidor src/main.c
-        #[[include/producer.h
+        include/buffer.h
+        src/buffer.c
         include/consumer.h
-        include/semaphore.h
-        include/queue.h
-        include/Node.h
-        src/queue.c]]
-        src/semaphore.c)
+        include/producer.h
+        src/producer.c
+        src/consumer.c
+)

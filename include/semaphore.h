@@ -9,7 +9,11 @@
 
 struct Semaphore {
     int counter;
-    struct queue;
+    struct Queue* blocked;
 };
+
+void wait(struct Semaphore* s);
+
+void signal(struct Semaphore* s);
 
 #endif //SEMAPHORE_H

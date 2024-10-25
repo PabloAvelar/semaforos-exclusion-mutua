@@ -1,29 +1,17 @@
 #include <stdio.h>
-//#include <pthread.h>
+#include <windows.h>
 #include <stdlib.h>
 
-#include "../include/queue.h"
+//#include "../include/queue.h"
 
-void* tarea(void* arg) {
-    printf("Soy un hilo ejecutando la tarea: %ld\n", (long)arg);
+DWORD WINAPI tarea(LPVOID param) {
+    int thread_id = *(int*)param; // Convierte el parámetro recibido
+    printf("Soy un hilo ejecutando la tarea: %d\n", thread_id);
 
-    return NULL;
+    return 0;
 }
 
-/*void multiprogramming() {
-    pthread_t thread1, thread2;
-
-    // Se crean dos hilos!!
-    pthread_create(&thread1, NULL, tarea, (void*)1);
-    pthread_create(&thread2, NULL, tarea, (void*)2);
-
-    // Se espera a que terminen
-    pthread_join(thread1, NULL);
-    pthread_join(thread2, NULL);
-    printf("Todos los hilos han terminado.");
-}*/
-
-void testqueue() {
+/*void testqueue() {
     struct Queue queue;
     initQueue(&queue);
 
@@ -43,12 +31,40 @@ void testqueue() {
     freeQueue(&queue);
     showQueue(&queue);
 
-}
+}*/
 
 int main() {
+    const int NUM_THREADS = 5;
+    HANDLE threads[NUM_THREADS];
+    int threads_ids[NUM_THREADS];
 
-    testqueue();
-    printf("\a");
+    for (int i = 0; i < NUM_THREADS; i++) {
+        threads_ids[i] = i;
+
+        // Creando el nuevo hilo
+        threads[i] = CreateThread(
+            NULL, // atributos de seguridad, usando el predeterminado
+            0,     // Tamaño de la pila
+            tarea, //Función a ejecutar el hilo
+            &threads_ids[i], // Parámetro para la función del hilo
+            0, // Bandera de creación, 0 para ejecución inmediata.
+            NULL // ID del hilo, NULL porque no se necesita.
+
+            );
+
+        if (threads[i] == NULL) {
+            printf("Error al crear el hilo %d\n", i);
+        }
+    }
+
+    WaitForMultipleObjects(NUM_THREADS, threads, TRUE, INFINITE);
+
+    // Cerrando los handles de los hilos
+    for(int i = 0; i < NUM_THREADS; i++) {
+        CloseHandle(threads[i]);
+    }
+
+    printf("Todos los hilos han terminado.\a\n");
     system("pause");
     return 0;
 }

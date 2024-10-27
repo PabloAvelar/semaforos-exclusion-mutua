@@ -11,6 +11,8 @@
 
 extern int buffer[BUFFER_SIZE];
 extern int count;
+extern int producer_count;
+extern int consumer_count;
 
 extern HANDLE mutex;
 extern HANDLE empty;

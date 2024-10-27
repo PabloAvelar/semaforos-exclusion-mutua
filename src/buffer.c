@@ -8,17 +8,23 @@
 
 int buffer[BUFFER_SIZE];
 int count = 0;
+int producer_count = 0;
+int consumer_count = 0;
 
 HANDLE mutex;
 HANDLE empty;
 HANDLE full;
 
 void initialize_sync() {
+    // Mutex para exclusión mutua en la sección crítica
     mutex = CreateMutex(NULL, FALSE, NULL);
-    empty = CreateSemaphore(NULL, 0, BUFFER_SIZE, NULL);
-    full = CreateSemaphore(NULL, BUFFER_SIZE, BUFFER_SIZE, NULL);
-}
 
+    // Semáforo `empty` inicializado a `BUFFER_SIZE` para indicar espacios vacíos
+    empty = CreateSemaphore(NULL, BUFFER_SIZE, BUFFER_SIZE, NULL);
+
+    // Semáforo `full` inicializado a 0 porque el buffer empieza vacío
+    full = CreateSemaphore(NULL, 0, BUFFER_SIZE, NULL);
+}
 void show_buffer() {
     printf("[");
     for (int i = 0; i < BUFFER_SIZE; i++) {

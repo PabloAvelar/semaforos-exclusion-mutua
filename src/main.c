@@ -16,9 +16,10 @@ int main(void) {
     threads[0] = CreateThread(NULL, 0, producer, NULL, 0, NULL);
     threads[1] = CreateThread(NULL, 0, consumer, NULL, 0, NULL);
 
-    // WaitForMultipleObjects(THREADCOUNT, threads, TRUE, INFINITE);
-    while (1) {
+    WaitForMultipleObjects(THREADCOUNT, threads, TRUE, INFINITE);
+    /*while (1) {
         int randomTurn = rand() % 2;
+        printf("turno: %d\n", randomTurn);
 
         if (randomTurn == 0) {
             // Permitir al productor
@@ -30,7 +31,7 @@ int main(void) {
 
         // Se hace wey un rato para decidir de nuevo
         Sleep(500);
-    }
+    }*/
 
     cleanup_sync();
 

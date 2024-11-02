@@ -8,12 +8,15 @@
 
 #include "../include/buffer.h"
 
+extern HANDLE sem_producer;
+extern HANDLE sem_consumer;
 DWORD WINAPI producer(LPVOID param) {
     int item = 0;
     int randomSleep = 0;
     int turn_count = 0;
 
     while (1) {
+         WaitForSingleObject(sem_producer, INFINITE); // Espera su turno
         item = rand() % 100 + 1;
         /*printf("\n");
         if (count == BUFFER_SIZE) {
@@ -48,7 +51,7 @@ DWORD WINAPI producer(LPVOID param) {
 
         // Durmiendo el proceso de forma aleatoria para que los procesos tomen el CPU al azar
         // randomSleep = rand() % (3000 - 1000 + 1) + 1000;
-        randomSleep = 2000;
+        randomSleep = rand() % 2000 + 800; // Tiempo de espera aleatorio entre800 y 2500 ms
         printf("[Productor]: durmiendo por %d segundos\n", randomSleep);
         Sleep(randomSleep);
     }

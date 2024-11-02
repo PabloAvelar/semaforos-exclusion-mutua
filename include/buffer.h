@@ -7,7 +7,7 @@
 
 #include <windows.h>
 
-#define BUFFER_SIZE 10
+#define BUFFER_SIZE 25
 
 extern int buffer[BUFFER_SIZE];
 extern int count;
